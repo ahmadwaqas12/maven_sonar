@@ -1,8 +1,8 @@
 pipeline {
-    agent none  // Don't use any agent by default, define it explicitly in stages
+    agent none  
 
     environment {
-        SONARQUBE = 'SonarQube_server'  // SonarQube server name, adjust if necessary
+        SONARQUBE = 'SonarQube_server'  
     }
 
     stages {
@@ -13,7 +13,7 @@ pipeline {
 
             steps {
                 withSonarQubeEnv('SonarQube_server') {
-                    // Run Maven build and SonarQube analysis
+
                     sh 'mvn clean package sonar:sonar'
                 }
             }
