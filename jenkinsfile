@@ -1,21 +1,16 @@
 pipeline {
-    agent {
-        docker { image 'maven:3.8.6-openjdk-11' }
-    }
+    agent none  // Don't use any agent by default, define it explicitly in stages
 
     environment {
-        SONARQUBE = 'SonarQube_server'
+        SONARQUBE = 'SonarQube_server'  // SonarQube server name, adjust if necessary
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                // Clone the GitHub repository
-                git 'https://github.com/ahmadwaqas12/maven_sonar.git'
+        stage('Build & SonarQube') {
+            agent {
+                docker { image 'maven:3.8.6-openjdk-11' }
             }
-        }
 
-        stage('Build & SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube_server') {
                     // Run Maven build and SonarQube analysis
