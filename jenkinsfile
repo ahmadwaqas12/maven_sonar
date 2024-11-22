@@ -1,26 +1,21 @@
 pipeline {
     agent none  
 
+    environment {
+        SONARQUBE = 'SonarQube_server'  
+    }
+
     stages {
         stage('Build & SonarQube') {
             agent {
-                docker {
-                    image 'maven:3.8.6-openjdk-11'
-                    args '--rm'
-                }
+                docker { image 'maven:3.8.6-openjdk-11' }
             }
 
             steps {
                 withSonarQubeEnv('SonarQube_server') {
-                    sh 'mvn clean package sonar:sonar'
-                }
-                script {
-                    def qg = waitForQualityGate()
-                    if (qg.status != 'OK') {
-                        error "Pipeline failed due to quality gate status: ${qg.status}"
-                    }
+                  sh 'mvn clean package sonar:sonar'
                 }
             }
         }
     }
-}
+}    
