@@ -1,21 +1,23 @@
 pipeline {
-    agent none  
-
-    environment {
-        SONARQUBE = 'SonarQube_server'  
-    }
+    agent none
 
     stages {
-        stage('Build & SonarQube') {
-            agent {
-                docker { image 'maven:3.8.6-openjdk-11' }
-            }
+        stage("Build & SonarQube Analysis") {
+            agent any
 
             steps {
-                withSonarQubeEnv('sonar') {
-                  sh 'mvn clean package sonar:sonar'
+                script {
+                    withSonarQubeEnv('SonarQube_server') {
+                        sh 'mvn clean package sonar:sonar'
+                    }
                 }
             }
         }
     }
-}    
+
+    post {
+        always {
+            echo 'Pipeline execution complete.'
+        }
+    }
+}
